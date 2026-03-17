@@ -137,9 +137,13 @@ void boatLoop(unsigned long timestamp, double heading) {
         heading_zero_offset = heading;
         started = 0;
         motors_armed = true;
+    } else if (motor_switch_now) {
+        motors_armed = true;
     } else {
         motors_armed = false;
+        started = -1;
     }
+        
     motor_switch_last = motor_switch_now;
 
     // Apply heading_zero offset and wrap into -180 to +180
@@ -161,9 +165,9 @@ void boatLoop(unsigned long timestamp, double heading) {
 
     // if the heading rate is less than some constant then turn on the Green LED
     if (fabs(heading_rate) < .005) {
-        ws_setPixelColor(1, 0, 10, 0);
+        ws_setPixelColor(0, 0, 1, 0);
     } else {
-        ws_setPixelColor(1, 10, 0, 0);
+        ws_setPixelColor(0, 1, 0, 0);
     }
     
     // check for boat start.  (currently rotate boat 90 degrees
@@ -195,12 +199,22 @@ void boatLoop(unsigned long timestamp, double heading) {
     }
 
     // handle orange "running LED"
-    // blinking: pre-start
-    // solid: boat is being controlled by program
-    if (started==1)  {
-        //set_sensorhub_led(1);
-    } else {
-        //blink_sensorhub_led();
+    // blinking: pre-start (started==0), solid: running (started==1)
+    {
+        static unsigned long last_blink_time = 0;
+        static bool blink_state = false;
+
+        if (started == 1) {
+            ws_setPixelColor(1, 20, 8, 0);          // solid orange
+        } else if (started == 0) {
+            if ((timestamp - last_blink_time) >= 500) {
+                blink_state = !blink_state;
+                last_blink_time = timestamp;
+            }
+            ws_setPixelColor(1, blink_state ? 20 : 0, blink_state ? 8 : 0, 0);
+        } else {
+            ws_setPixelColor(1, 0, 0, 0);           // off when not ready
+        }
     }
 
     //--------------------------------------------------------------------------------
@@ -250,10 +264,10 @@ void boatLoop(unsigned long timestamp, double heading) {
     }
 
     // Turn on LED if heading +- 5 degrees of the target
-    if (fabs(calculateDifferenceBetweenAngles(heading, target)) < 5.0) {
-        ws_setPixelColor(2, 10, 0, 0);
-    } else {
+    if (fabs(calculateDifferenceBetweenAngles(heading, target)) < 2.0) {
         ws_setPixelColor(2, 0, 10, 0);
+    } else {
+        ws_setPixelColor(2, 10, 0, 0);
     }
 
     // Update LEDs every 50ms
