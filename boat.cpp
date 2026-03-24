@@ -69,6 +69,18 @@ double wrapTo180(double angle) {
     return angle;
 }
 
+struct Waypoint {
+    unsigned long time_ms;  // elapsed mission time to activate this heading
+    int heading360;         // compass heading in degrees (0–360)
+};
+
+static const Waypoint waypoints[] = {
+    {     0,   0 },   // 0–10s:  straight ahead
+    { 10000, 270 },   // 10–20s: turn to 270
+    { 20000, 180 },   // 20s+:   turn to 180
+};
+static const int WAYPOINT_COUNT = sizeof(waypoints) / sizeof(waypoints[0]);
+
 /*
  * boatLoop
  * ----------------------------
@@ -89,6 +101,7 @@ void boatLoop(unsigned long timestamp, double heading) {
     static boolean motors_armed = false;         // is motor armed
     static boolean motor_switch_last = false;    // previous state of motor switch (for edge detection)
     static boolean motor_switch_init = false;    // has motor switch state been seeded
+    static int waypoint_index = 0;               // current waypoint index
     
     int target360 = 0;                          // target heading in compass degrees (0-360)
     double target = 0.0;                        // target heading in -180 to +180
@@ -136,12 +149,12 @@ void boatLoop(unsigned long timestamp, double heading) {
         servoEsc.write(0);   // motor off
         heading_zero_offset = heading;
         started = 0;
+        waypoint_index = 0;
         motors_armed = true;
     } else if (motor_switch_now) {
         motors_armed = true;
     } else {
         motors_armed = false;
-        started = -1;
     }
         
     motor_switch_last = motor_switch_now;
@@ -159,7 +172,9 @@ void boatLoop(unsigned long timestamp, double heading) {
         Serial.print("Heading: ");
         Serial.print(heading);
         Serial.print(", ");
-        Serial.println(heading_rate,3);
+        Serial.print(heading_rate,3);
+        Serial.print(", ");
+        Serial.println(started);
         last_time = timestamp;
     }
 
@@ -223,13 +238,12 @@ void boatLoop(unsigned long timestamp, double heading) {
     if (started==1) {
         running_time = timestamp - start_time;			// calculate elapsed time
         
-        // place timed events here (compass degrees 0-360 clockwise)
-        if (running_time < 10000)
-            target360 = 0;                              // run for 10s straight ahead
-        else if (running_time < 20000)
-            target360 = 270;                            // turn to 270 for 10s
-        else
-            target360 = 180;                            // turn to 180 for remainder
+        // Advance through waypoints as elapsed time passes
+        while (waypoint_index + 1 < WAYPOINT_COUNT &&
+               running_time >= waypoints[waypoint_index + 1].time_ms) {
+            waypoint_index++;
+        }
+        target360 = waypoints[waypoint_index].heading360;
 
         // convert compass target to -180 to +180
         target = (target360 > 180) ? target360 - 360 : target360;
