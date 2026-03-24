@@ -25,7 +25,25 @@ extern Servo servoEsc;  // Single motor OR right motor (dual motor)
 unsigned long last_time = 0;     // last time through the loop
 
 #define P 2.0
-#define MOTOR_BASE_SPEED 90
+#define MOTOR_BASE_SPEED 0.5
+
+/*
+ * setMotor1Speed
+ * --------------
+ * Set the ESC motor speed. speed is in the range 0.0 (off) to 1.0 (full).
+ */
+void setMotor1Speed(double speed) {
+    servoEsc.write((int)(speed * 180.0));
+}
+
+/*
+ * setMotor2Speed
+ * --------------
+ * Set the left motor speed (dual motor config). speed is in the range 0.0 (off) to 1.0 (full).
+ */
+void setMotor2Speed(double speed) {
+    servo2.write((int)(speed * 180.0));
+}
 
 /*
  * Button/Switch functions
@@ -37,10 +55,6 @@ bool motorSwitchPressed() {
 
 bool calibrateSwitchPressed() {
     return digitalRead(CALIBRATE_SWITCH) == 0;
-}
-
-bool escSwitchPressed() {
-    return digitalRead(MOTOR_SWITCH) == 0;
 }
 
 /*
@@ -118,12 +132,12 @@ void boatLoop(unsigned long timestamp, double heading) {
     // Calibrate ESC with max and min pulse widths
     if (calibrate_time) {
         if (calibrateSwitchPressed() == 1) {
-            servoEsc.write(180);
+            setMotor1Speed(1.0);
         }
 
         while (calibrateSwitchPressed() == 1)  {} // loop with pressed waiting for ESC beeps
 
-        servoEsc.write(0);
+        setMotor1Speed(0.0);
 
         calibrate_time = false;
     }
@@ -131,7 +145,10 @@ void boatLoop(unsigned long timestamp, double heading) {
     // Run one time initialization routines.
     if (first_time) {
         servo1.write(90);    // rudder straight
-        servoEsc.write(0);   // motor off
+        setMotor1Speed(0.0);   // motor off
+#ifdef DUAL_MOTOR
+        setMotor2Speed(0.0);
+#endif
         first_time = false;
         motors_armed = false;
     }
@@ -144,9 +161,13 @@ void boatLoop(unsigned long timestamp, double heading) {
         motor_switch_init = true;
     }
 
-    if (motor_switch_now && !motor_switch_last) {
+    // was just pressed rising
+    if (!motor_switch_last && motor_switch_now) {
         servo1.write(90);    // rudder straight
-        servoEsc.write(0);   // motor off
+        setMotor1Speed(0.0);   // motor off
+#ifdef DUAL_MOTOR
+        setMotor2Speed(0.0);
+#endif
         heading_zero_offset = heading;
         started = 0;
         waypoint_index = 0;
@@ -190,27 +211,6 @@ void boatLoop(unsigned long timestamp, double heading) {
         started = 1;
         start_time = timestamp;
         Serial.println("Started");
-
-        //
-        // Start the boat's motor(s)
-        //
-
-        //--------------------------------------------------
-        // Single motor + rudder
-        // servo1: Rudder, servoEsc: motor
-        //--------------------------------------------------
-        servoEsc.write(MOTOR_BASE_SPEED);          // start motor. range 0-180
-        //--------------------------------------------------
-        // Dual motor
-        // servo2: left motor, servoEsc: right motor
-        //--------------------------------------------------
-            // servo2.write(MOTOR_BASE_SPEED);    // start left motor at base speed. range 0-180
-            // servoEsc.write(MOTOR_BASE_SPEED);  // start right motor at base speed. range 0-180
-        //--------------------------------------------------
-        // Dual brush motors
-        //--------------------------------------------------
-            // set_pwm_duty_cycle_1(0.5);
-            // set_pwm_duty_cycle_2(0.5);
     }
 
     // handle orange "running LED"
@@ -253,28 +253,36 @@ void boatLoop(unsigned long timestamp, double heading) {
         error = calculateDifferenceBetweenAngles(heading, target);
 
 
+#ifdef DUAL_MOTOR
+        //--------------------------------------------------
+        // Dual motor differential steering
+        // servo2: left motor, servoEsc: right motor, no rudder
+        //--------------------------------------------------
+        diff = (P * error) / 180.0;      // scale error to motor-speed units
+        if (diff >  MOTOR_BASE_SPEED) diff =  MOTOR_BASE_SPEED;
+        if (diff < -MOTOR_BASE_SPEED) diff = -MOTOR_BASE_SPEED;
+        if (motors_armed) {
+            setMotor2Speed(MOTOR_BASE_SPEED - diff);   // left
+            setMotor1Speed(MOTOR_BASE_SPEED + diff);   // right
+        } else {
+            setMotor2Speed(0.0);
+            setMotor1Speed(0.0);
+        }
+#else
         //--------------------------------------------------
         // Single motor + rudder
         // servo1: Rudder, servoEsc: motor
         //--------------------------------------------------
         rudder = P * error;
-        // set limits on rudder movement
-        if (rudder > 90) rudder  = 90;
+        if (rudder >  90) rudder =  90;
         if (rudder < -90) rudder = -90;
-        // set servo angles in response to PID
-        servo1.write(90 + rudder);                      // if rudder is reversed, change + to -
-        //--------------------------------------------------
-        // Dual motor
-        // servo2: left motor, servoEsc: right motor
-        //--------------------------------------------------
-            // diff = P * error;
-            // servo2.write(MOTOR_BASE_SPEED + diff);
-            // servoEsc.write(MOTOR_BASE_SPEED + diff);
-        //--------------------------------------------------
-        // Dual brush motors
-        //--------------------------------------------------
-            //set_pwm_duty_cycle_1(diff);
-            //set_pwm_duty_cycle_2(diff);
+        servo1.write(90 + rudder);
+        if (motors_armed) {
+            setMotor1Speed(MOTOR_BASE_SPEED);
+        } else {
+            setMotor1Speed(0.0);
+        }
+#endif
     }
 
     // Turn on LED if heading +- 5 degrees of the target
