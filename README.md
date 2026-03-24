@@ -1,12 +1,12 @@
 # GNOR
 ![Orange](docs/orange.jpg)
 ![Hull](docs/boathull.gif)
-##### GNOR Description
+## GNOR Description
 The Great Navel Orange Race (GNOR) is an annual competition held at UCF every year for the second intro to engineering course. The project involves students building a boat, submarine, or other watercraft that autonomously carries an orange around the reflection pond.
 The TI Innovation lab is providing students with TI microcontroller boards (MSP430f5529 LaunchPad, MSP-EXP432P401R LaunchPad) and sensors (TI Sensor Hub) for use in their watercrafts. These components empower students to control servos, provide signals for high power relays and ESCs, measure angle change relative to starting angle, look at accelerometer data, and more.
 This repository provides everything needed to get started using these components. This includes example code, pinouts, and more. If you have any questions or are having trouble getting started, you can find help at the UCF Innovation Lab in ENGII room 112 9AM-10PM M-F and Saturday 10-5. 
 
-##### Supported Boards
+## Supported Boards
 
 This project supports the following three microcontroller boards:
 
@@ -15,7 +15,7 @@ This project supports the following three microcontroller boards:
 | ![MSP-EXP430F5529LP](docs/MSP-EXP430F5529LP.png) | ![MSP-EXP432P401R](docs/MSP-EXP432P401R.png) | ![ESP32-CP2102](docs/ESP32-CP2012.png) |
 | MSP-EXP430F5529LP | MSP-EXP432P401R | ESP32-CP2102 |
 
-##### Install Instructions
+## Install Instructions
 ## Arduino IDE 2.x Setup
 
 This project requires additional board package URLs, standard Arduino libraries, and custom ZIP libraries. Follow the steps below to fully configure Arduino IDE 2.x.
@@ -111,6 +111,46 @@ Using ZIP files from the **Releases** page is recommended because they provide a
 6. Select your target board from the **Tools → Board** menu.
 7. Open your project sketch.
 8. Run a compile test to confirm that the required boards and libraries were installed correctly.
+
+## Software Usage
+
+Before opening the project in the Arduino IDE, you need to download the GNOR_V4 sketch from GitHub. There are two ways to do this:
+
+### Option 1 — GitHub Desktop (Recommended)
+
+GitHub Desktop is a free application that lets you clone and manage repositories with a graphical interface.
+
+**Advantages:**
+- If a bug fix or update is released, you can pull the latest changes with a single click — no need to re-download and re-extract a ZIP file.
+- Your local copy stays linked to the repository, making it easy to stay up to date throughout the competition.
+
+**Steps:**
+1. Download and install [GitHub Desktop](https://desktop.github.com) if you have not already.
+2. Open GitHub Desktop.
+3. Click **File → Clone Repository**.
+4. Select the **URL** tab.
+5. Enter the repository URL: `http://github.com/ucfinnovationlab/GNOR_V4`
+6. Choose a local folder to save the project.
+7. Click **Clone**.
+8. Once cloned, open the `GNOR_V4.ino` file in the Arduino IDE.
+
+To update the project later, open GitHub Desktop and click **Fetch origin**, then **Pull** to download any new changes.
+
+### Option 2 — Download ZIP
+
+**Advantages:**
+- No additional software required — works with just a web browser and file explorer.
+- Quick and simple for a one-time download.
+
+**Steps:**
+1. Open `http://github.com/ucfinnovationlab/GNOR_V4` in your web browser.
+2. Click the green **Code** button near the top right of the page.
+3. Select **Download ZIP**.
+4. Save the ZIP file to your computer.
+5. Extract the ZIP file to a folder of your choice.
+6. Open the extracted `GNOR_V4/GNOR_V4.ino` file in the Arduino IDE.
+
+Note: if updates or bug fixes are released, you will need to repeat this process and re-download the ZIP to get the latest version.
 
 ## Notes
 
