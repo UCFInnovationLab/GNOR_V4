@@ -45,17 +45,17 @@ Install only the board package(s) that match the board(s) you are using.
 #### MSP-EXP430F5529LP
 1. In the Arduino IDE, click **Tools**.
 2. Select **Board**, then click **Boards Manager**.
-3. In the search box, type **TI Platform Cores**.
-4. Locate the **TI Platform Cores for Arduino** package (added via the board manager URL in Step 2).
+3. In the search box, type **Energia MSP430 boards**.
+4. Locate the **Energia MSP430 boards** package.
 5. Click **Install** and wait for the installation to finish.
 6. To select this board: **Tools → Board → Energia MSP430 Boards → MSP-EXP430F5529LP**
 
 #### MSP-EXP432P401R
 1. In the Arduino IDE, click **Tools**.
 2. Select **Board**, then click **Boards Manager**.
-3. In the search box, type **TI Platform Cores**.
-4. Locate the **TI Platform Cores for Arduino** package (added via the board manager URL in Step 2).
-5. Click **Install** and wait for the installation to finish (same package as MSP430 — skip if already installed).
+3. In the search box, type **TI MSP432P4xx Launchpad board**.
+4. Locate the **TI MSP432P4xx Launchpad board** package.
+5. Click **Install** and wait for the installation to finish.
 6. To select this board: **Tools → Board → Energia MSP432 EMT RED Boards → MSP-EXP432P401R**
 
 #### ESP32-CP2102
