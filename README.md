@@ -112,6 +112,13 @@ Using ZIP files from the **Releases** page is recommended because they provide a
 7. Open your project sketch.
 8. Run a compile test to confirm that the required boards and libraries were installed correctly.
 
+## Notes
+
+- If the **Additional Boards Manager URLs** field already contains entries, keep them and add these new URLs on separate lines.
+- Do not remove existing URLs unless you are sure they are no longer needed.
+- If you previously installed older versions of the custom ZIP libraries manually, remove the older copies first to avoid duplicate library conflicts.
+- After installation, example sketches may appear under **File → Examples**.
+
 ## Software Usage
 
 Before opening the project in the Arduino IDE, you need to download the GNOR_V4 sketch from GitHub. There are two ways to do this:
@@ -152,9 +159,21 @@ To update the project later, open GitHub Desktop and click **Fetch origin**, the
 
 Note: if updates or bug fixes are released, you will need to repeat this process and re-download the ZIP to get the latest version.
 
-## Notes
+## GNOR V4 Green Board Usage
 
-- If the **Additional Boards Manager URLs** field already contains entries, keep them and add these new URLs on separate lines.
-- Do not remove existing URLs unless you are sure they are no longer needed.
-- If you previously installed older versions of the custom ZIP libraries manually, remove the older copies first to avoid duplicate library conflicts.
-- After installation, example sketches may appear under **File → Examples**.
+![GNOR PCB V4](docs/GNOR_pcb_v4.png)
+
+### Single Rudder Boat Wiring
+
+#### Rudder Servo
+Connect the rudder servo to the **Servo1** connector on the board. Mind the orientation: the **black wire must align with the white line** on the board.
+
+> **<span style="color:red">WARNING: Incorrect orientation will damage the board and/or servo. Double-check the wire orientation before applying power.</span>**
+
+#### ESC (Electronic Speed Controller)
+Connect the ESC signal cable to the **ESC** connector on the board. Mind the orientation: the **black wire must align with the white line** on the board.
+
+> **<span style="color:red">WARNING: Incorrect orientation will damage the board and/or ESC. Double-check the wire orientation before applying power.</span>**
+
+#### Motor Switch
+Connect the motor switch to the **Motor Switch** connector on the board.
