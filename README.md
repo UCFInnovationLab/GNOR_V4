@@ -176,4 +176,4 @@ Connect the ESC signal cable to the **ESC** connector on the board. Mind the ori
 > **<span style="color:red">WARNING: Incorrect orientation will damage the board and/or ESC. Double-check the wire orientation before applying power.</span>**
 
 #### Motor Switch
-Connect the motor switch to the **Motor Switch** connector on the board.
+Connect the motor switch to the **Motor** connector on the board.
