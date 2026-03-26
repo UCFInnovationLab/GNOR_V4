@@ -291,6 +291,13 @@ void loop() {
     ws_fill(c.r, c.g, c.b);
     ws_show();
     wsColorIndex = (wsColorIndex + 1) % COLOR_COUNT;
+    // wsLastChange = now;
+    // RGB c = {0,0,0x80};
+    // ws_setPixelColor(0,0,0,0x80);
+    // ws_setPixelColor(1,10,0,0);
+    // ws_setPixelColor(2,0,10,0);
+    // ws_fill(c.r, c.g, c.b);
+    // ws_show();
   }
 #endif // USE_WS2812_TEST
 

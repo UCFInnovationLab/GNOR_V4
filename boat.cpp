@@ -161,7 +161,7 @@ void boatLoop(unsigned long timestamp, double heading) {
         motor_switch_init = true;
     }
 
-    // was just pressed rising
+    // was switch just pressed (rising edge)
     if (!motor_switch_last && motor_switch_now) {
         servo1.write(90);    // rudder straight
         setMotor1Speed(0.0);   // motor off
@@ -201,9 +201,9 @@ void boatLoop(unsigned long timestamp, double heading) {
 
     // if the heading rate is less than some constant then turn on the Green LED
     if (fabs(heading_rate) < .005) {
-        ws_setPixelColor(0, 0, 1, 0);
+        ws_setPixelColor(0, 0, 10, 0);
     } else {
-        ws_setPixelColor(0, 1, 0, 0);
+        ws_setPixelColor(0, 10, 0, 0);
     }
     
     // check for boat start.  (currently rotate boat 90 degrees
