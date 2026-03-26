@@ -286,18 +286,18 @@ void loop() {
   /* Cycle all three LEDs through colors at WS2812_INTERVAL_MS per step */
   unsigned long now = millis();
   if (now - wsLastChange >= WS2812_INTERVAL_MS) {
-    wsLastChange = now;
-    RGB c = COLORS[wsColorIndex];
-    ws_fill(c.r, c.g, c.b);
-    ws_show();
-    wsColorIndex = (wsColorIndex + 1) % COLOR_COUNT;
     // wsLastChange = now;
-    // RGB c = {0,0,0x80};
-    // ws_setPixelColor(0,0,0,0x80);
-    // ws_setPixelColor(1,10,0,0);
-    // ws_setPixelColor(2,0,10,0);
+    // RGB c = COLORS[wsColorIndex];
     // ws_fill(c.r, c.g, c.b);
     // ws_show();
+    // wsColorIndex = (wsColorIndex + 1) % COLOR_COUNT;
+    wsLastChange = now;
+    RGB c = {0,0,0x80};
+    ws_setPixelColor(0,0xff,0,0x0);
+    ws_setPixelColor(1,10,0,0);
+    ws_setPixelColor(2,0,10,0);
+    // ws_fill(c.r, c.g, c.b);
+    ws_show();
   }
 #endif // USE_WS2812_TEST
 

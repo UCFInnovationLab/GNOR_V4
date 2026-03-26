@@ -24,16 +24,18 @@ extern Servo servoEsc;  // Single motor OR right motor (dual motor)
 
 unsigned long last_time = 0;     // last time through the loop
 
-#define P 2.0
-#define MOTOR_BASE_SPEED 0.5
-
+#define P 2.0                       // Proportional constant used by the rudder or for each dual motor
+#define MOTOR_BASE_SPEED 0.5        // Default speed the single or dual motor(s) use (0.0-1.0)
+#define THROTTLE_HIGH_DEGREES 145   // High throttle setting in servo degrees
+#define THROTTLE_LOW_DEGREES 35     // Low throttle setting in servo degrees
+#define MAX_RUDDER_DEGREES 90/2     // Max angle the rudder moves on each side of zreo (90). Normally 45 Degrees.
 /*
  * setMotor1Speed
  * --------------
  * Set the ESC motor speed. speed is in the range 0.0 (off) to 1.0 (full).
  */
 void setMotor1Speed(double speed) {
-    servoEsc.write((int)(speed * 180.0));
+    servoEsc.write((int)(THROTTLE_LOW_DEGREES + (speed * (THROTTLE_HIGH_DEGREES - THROTTLE_LOW_DEGREES))));
 }
 
 /*
@@ -42,7 +44,7 @@ void setMotor1Speed(double speed) {
  * Set the left motor speed (dual motor config). speed is in the range 0.0 (off) to 1.0 (full).
  */
 void setMotor2Speed(double speed) {
-    servo2.write((int)(speed * 180.0));
+    servoEsc.write((int)(THROTTLE_LOW_DEGREES + (speed * (THROTTLE_HIGH_DEGREES - THROTTLE_LOW_DEGREES))));
 }
 
 /*
@@ -69,7 +71,6 @@ double calculateDifferenceBetweenAngles(double angle1, double angle2) {
     if (delta < -180.0) delta += 360.0;
     return delta;
 }
-
 
 /*
  * wrapTo180
@@ -257,6 +258,7 @@ void boatLoop(unsigned long timestamp, double heading) {
         //--------------------------------------------------
         // Dual motor differential steering
         // servo2: left motor, servoEsc: right motor, no rudder
+        // NOTE: remember to detach the red power wire from the servo2 ESC
         //--------------------------------------------------
         diff = (P * error) / 180.0;      // scale error to motor-speed units
         if (diff >  MOTOR_BASE_SPEED) diff =  MOTOR_BASE_SPEED;
@@ -274,8 +276,8 @@ void boatLoop(unsigned long timestamp, double heading) {
         // servo1: Rudder, servoEsc: motor
         //--------------------------------------------------
         rudder = P * error;
-        if (rudder >  90) rudder =  90;
-        if (rudder < -90) rudder = -90;
+        if (rudder >  MAX_RUDDER_ANGLE) rudder =  MAX_RUDDER_ANGLE;
+        if (rudder < -MAX_RUDDER_ANGLE) rudder = -MAX_RUDDER_ANGLE;
         servo1.write(90 + rudder);
         if (motors_armed) {
             setMotor1Speed(MOTOR_BASE_SPEED);
