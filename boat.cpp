@@ -37,11 +37,17 @@ unsigned long last_time = 0;     // last time through the loop
 
 // Waypoint Array
 //
+struct Waypoint {
+    unsigned long time_ms;  // elapsed mission time to activate this heading
+    int heading360;         // compass heading in degrees (0–360)
+};
+
 static const Waypoint waypoints[] = {
     {     0,   0 },   // 0–10s:  straight ahead
     { 10000, 270 },   // 10–20s: turn to 270
     { 20000, 180 },   // 20s+:   turn to 180
 };
+static const int WAYPOINT_COUNT = sizeof(waypoints) / sizeof(waypoints[0]);
 
 /*
  * setMotor1Speed
@@ -98,12 +104,7 @@ double wrapTo180(double angle) {
     return angle;
 }
 
-struct Waypoint {
-    unsigned long time_ms;  // elapsed mission time to activate this heading
-    int heading360;         // compass heading in degrees (0–360)
-};
 
-static const int WAYPOINT_COUNT = sizeof(waypoints) / sizeof(waypoints[0]);
 
 /*
  * boatLoop

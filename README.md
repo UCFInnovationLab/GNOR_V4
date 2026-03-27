@@ -159,7 +159,7 @@ To update the project later, open GitHub Desktop and click **Fetch origin**, the
 2. Click the green **Code** button near the top right of the page.
 3. Select **Download ZIP**.
 4. Save the ZIP file to your computer.
-5. Extract the ZIP file to a folder of your choice.
+5. Extract the ZIP file to a folder of your choice. Ensure the folder is named `GNOR_V4`.
 6. Open the extracted `GNOR_V4/GNOR_V4.ino` file in the Arduino IDE.
 
 Note: if updates or bug fixes are released, you will need to repeat this process and re-download the ZIP to get the latest version.
