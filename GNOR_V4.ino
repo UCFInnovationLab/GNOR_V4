@@ -260,6 +260,9 @@ void setup() {
 #endif // USE_SERVO_TEST
 }
 
+//
+// MAIN LOOP
+//
 void loop() {
 #ifdef USE_MPU
   if (!DMPReady) return; // Stop the program if DMP initialization failed.
@@ -286,18 +289,11 @@ void loop() {
   /* Cycle all three LEDs through colors at WS2812_INTERVAL_MS per step */
   unsigned long now = millis();
   if (now - wsLastChange >= WS2812_INTERVAL_MS) {
-    // wsLastChange = now;
-    // RGB c = COLORS[wsColorIndex];
-    // ws_fill(c.r, c.g, c.b);
-    // ws_show();
-    // wsColorIndex = (wsColorIndex + 1) % COLOR_COUNT;
     wsLastChange = now;
-    RGB c = {0,0,0x80};
-    ws_setPixelColor(0,0xff,0,0x0);
-    ws_setPixelColor(1,10,0,0);
-    ws_setPixelColor(2,0,10,0);
-    // ws_fill(c.r, c.g, c.b);
+    RGB c = COLORS[wsColorIndex];
+    ws_fill(c.r, c.g, c.b);
     ws_show();
+    wsColorIndex = (wsColorIndex + 1) % COLOR_COUNT;
   }
 #endif // USE_WS2812_TEST
 
@@ -312,6 +308,10 @@ void loop() {
 
 #ifdef USE_SERVO_TEST
   /* Sweep all servos from low (20°) to high (160°) and back */
+  servo1.write(servoPos);
+    if (servoPos <= 20) sweepUp = true;
+  }
+  delay(15);
   servo1.write(servoPos);
   servo2.write(servoPos);
   servo3.write(servoPos);

@@ -155,6 +155,7 @@ void boatLoop(unsigned long timestamp, double heading) {
 
     // Run one time initialization routines.
     if (first_time) {
+        Serial.println("("************* BOAT LOOP STARTED *************");
         servo1.write(90);    // rudder straight
         setMotor1Speed(0.0);   // motor off
 #ifdef DUAL_MOTOR
@@ -211,21 +212,24 @@ void boatLoop(unsigned long timestamp, double heading) {
     }
 
     // if the heading rate is less than some constant then turn on the Green LED
+#ifdef USE_WS2812
     if (fabs(heading_rate) < .005) {
         ws_setPixelColor(0, 0, 10, 0);
     } else {
         ws_setPixelColor(0, 10, 0, 0);
     }
+#endif
     
     // check for boat start.  (currently rotate boat 90 degrees
     if (((calculateDifferenceBetweenAngles(heading, 90)) > 0.0) && (started==0)) {
         started = 1;
         start_time = timestamp;
-        Serial.println("Started");
+        Serial.println("************* Started *************");
     }
 
     // handle orange "running LED"
     // blinking: pre-start (started==0), solid: running (started==1)
+#ifdef USE_WS2812
     {
         static unsigned long last_blink_time = 0;
         static bool blink_state = false;
@@ -242,6 +246,7 @@ void boatLoop(unsigned long timestamp, double heading) {
             ws_setPixelColor(1, 0, 0, 0);           // off when not ready
         }
     }
+#endif
 
     //--------------------------------------------------------------------------------
     // Main routine that runs after boat has started
@@ -288,7 +293,6 @@ void boatLoop(unsigned long timestamp, double heading) {
         rudder = P * error;
         if (rudder >  MAX_RUDDER_DEGREES) rudder =  MAX_RUDDER_DEGREES;
         if (rudder < -MAX_RUDDER_DEGREES) rudder = -MAX_RUDDER_DEGREES;
-        Serial.println(rudder);
         servo1.write(90 + rudder);
         if (motors_armed) {
             setMotor1Speed(MOTOR_BASE_SPEED);
@@ -299,6 +303,7 @@ void boatLoop(unsigned long timestamp, double heading) {
     }
 
     // Pixel 2: green when on target, red brightens for positive error, blue brightens for negative
+#ifdef USE_WS2812
     {
         double led2_err = calculateDifferenceBetweenAngles(heading, target);
         uint8_t r = 0, g = 0, b = 0;
@@ -323,6 +328,7 @@ void boatLoop(unsigned long timestamp, double heading) {
         ws_show();
         last_led_time = timestamp;
     }
+#endif
 
 }
 
