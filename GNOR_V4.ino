@@ -1,15 +1,5 @@
-#define USE_MPU           // Comment out to disable MPU6050
-#define USE_WS2812        // Comment out to disable WS2812 LEDs (MSP430, MSP432, ESP32)
-#define USE_BOAT          // Include boat loop
-//#define DUAL_MOTOR      // differential steering: left=servo2, right=servoEsc, no rudder
-//#define USE_SERVO_TEST  // Comment out to disable servo sweep test
-//#define USE_WS2812_TEST // Comment out to disable WS2812 color cycle test (requires USE_WS2812)
-//#define USE_SWITCH_TEST // Comment out to disable switch → LED test (requires USE_WS2812)
-
-
 #include "GNOR_V4.h"
 
-#if defined(USE_BOAT) || defined(USE_SERVO_TEST)
 /*---Servo library and objects (shared by USE_BOAT and USE_SERVO_TEST)---*/
 #if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
   #include <ESP32Servo.h>
@@ -20,7 +10,6 @@ Servo servo1;     // Rudder
 Servo servo2;     // Left motor (dual motor config)
 Servo servo3;     // Auxiliary servo
 Servo servoEsc;   // Single motor OR right motor (dual motor config)
-#endif // USE_BOAT || USE_SERVO_TEST
 
 #ifdef USE_WS2812
 #define WS2812_COUNT 3
@@ -84,13 +73,13 @@ inline void ws_fill(uint8_t r, uint8_t g, uint8_t b) {
 /*---WS2812 Color Cycle Test Variables---*/
 struct RGB { uint8_t r, g, b; };
 const RGB COLORS[] = {
-  {255,   0,   0},  // Red
-  {255, 128,   0},  // Orange
-  {255, 255,   0},  // Yellow
-  {  0, 255,   0},  // Green
-  {  0,   0, 255},  // Blue
-  {148,   0, 211},  // Purple
-  {255, 255, 255},  // White
+  {50,   0,   0},  // Red
+  {50, 25,   0},  // Orange
+  {50, 50,   0},  // Yellow
+  {  0, 50,   0},  // Green
+  {  0,   0, 50},  // Blue
+  {25,   0, 50},  // Purple
+  {50, 50, 50},  // White
 };
 const int COLOR_COUNT = sizeof(COLORS) / sizeof(COLORS[0]);
 
@@ -114,6 +103,7 @@ void boatLoop(unsigned long timestamp, double heading);
 #include "MPU6050_6Axis_MotionApps20.h"
 //#include "MPU6050_6Axis_MotionApps612.h" // Uncomment this library to work with DMP 6.12 and comment on the above library.
 
+double yaw = 1.0;
 /* MPU6050 default I2C address is 0x68*/
 MPU6050 mpu;
 //MPU6050 mpu(0x69); //Use for AD0 high
@@ -236,24 +226,17 @@ void setup() {
   Serial.println(F("WS2812 enabled."));
 #endif // USE_WS2812
 
-#ifdef USE_SWITCH_TEST
-  pinMode(MOTOR_SWITCH,     INPUT_PULLUP);
-  pinMode(CALIBRATE_SWITCH, INPUT_PULLUP);
-  Serial.println(F("Switch test enabled."));
-#endif // USE_SWITCH_TEST
-
-#if defined(USE_BOAT) || defined(USE_SERVO_TEST)
-  #if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
-  servo1.setPeriodHertz(50);
-  servo2.setPeriodHertz(50);
-  servo3.setPeriodHertz(50);
-  servoEsc.setPeriodHertz(50);
-  #endif
-  servo1.attach(SERVO1_PIN);
-  servo2.attach(SERVO2_PIN);
-  servo3.attach(SERVO3_PIN);
-  servoEsc.attach(ESC_PIN);
-#endif // USE_BOAT || USE_SERVO_TEST
+#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
+servo1.setPeriodHertz(50);
+servo2.setPeriodHertz(50);
+servo3.setPeriodHertz(50);
+servoEsc.setPeriodHertz(50);
+#endif
+servo1.attach(SERVO1_PIN);
+servo2.attach(SERVO2_PIN);
+servo3.attach(SERVO3_PIN);
+servoEsc.attach(ESC_PIN);
+servo1.write(90);
 
 #ifdef USE_SERVO_TEST
   Serial.println(F("Servo test enabled."));
@@ -273,14 +256,14 @@ void loop() {
     mpu.dmpGetQuaternion(&q, FIFOBuffer);
     mpu.dmpGetGravity(&gravity, &q);
     mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-    float yaw = ypr[0] * 180/M_PI;
+    yaw = ypr[0] * 180/M_PI;
     unsigned long timestamp = millis();
 
     //Serial.print("yaw: ");
     //Serial.println(yaw);
 
 #ifdef USE_BOAT
-    boatLoop(timestamp, (double)yaw);
+    boatLoop(timestamp, yaw);
 #endif // USE_BOAT
   }
 #endif // USE_MPU
@@ -291,27 +274,28 @@ void loop() {
   if (now - wsLastChange >= WS2812_INTERVAL_MS) {
     wsLastChange = now;
     RGB c = COLORS[wsColorIndex];
-    ws_fill(c.r, c.g, c.b);
-    ws_show();
     wsColorIndex = (wsColorIndex + 1) % COLOR_COUNT;
+    ws_setPixelColor(2, c.r, c.g, c.b);
+    c = COLORS[(int)yaw % COLOR_COUNT];
+    ws_setPixelColor(1, c.r, c.g, c.b);
+    /* Test switches while we are here */
+    bool motorPressed     = (digitalRead(MOTOR_SWITCH)     == LOW);
+    bool calibratePressed = (digitalRead(CALIBRATE_SWITCH) == LOW);
+    if (motorPressed) 
+      ws_setPixelColor(0, 50, 0, 0);
+    else if (calibratePressed) 
+      ws_setPixelColor(0, 0, 50, 0);
+    else if (motorPressed && calibratePressed)
+      ws_setPixelColor(0, 50, 50, 0);
+    else
+      ws_setPixelColor(0, 50, 50, 50);
+    ws_show();
+    
   }
 #endif // USE_WS2812_TEST
 
-#ifdef USE_SWITCH_TEST
-  /* Light LED 0 red on motor_switch, LED 1 red on calibrate_switch, both when both pressed */
-  bool motorPressed     = (digitalRead(MOTOR_SWITCH)     == LOW);
-  bool calibratePressed = (digitalRead(CALIBRATE_SWITCH) == LOW);
-  ws_setPixelColor(0, motorPressed     ? 255 : 0, 0, 0);
-  ws_setPixelColor(1, calibratePressed ? 255 : 0, 0, 0);
-  ws_show();
-#endif // USE_SWITCH_TEST
-
 #ifdef USE_SERVO_TEST
   /* Sweep all servos from low (20°) to high (160°) and back */
-  servo1.write(servoPos);
-    if (servoPos <= 20) sweepUp = true;
-  }
-  delay(15);
   servo1.write(servoPos);
   servo2.write(servoPos);
   servo3.write(servoPos);

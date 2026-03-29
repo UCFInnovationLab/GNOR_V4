@@ -8,6 +8,13 @@
 
 #include <Arduino.h>
 
+#define USE_MPU           // Comment out to disable MPU6050
+#define USE_WS2812        // Comment out to disable WS2812 LEDs (MSP430, MSP432, ESP32)
+#define USE_BOAT          // Include boat loop
+//#define DUAL_MOTOR      // differential steering: left=servo2, right=servoEsc, no rudder
+//#define USE_SERVO_TEST  // Comment out to disable servo sweep test
+//#define USE_WS2812_TEST // Comment out to disable WS2812 color cycle test (requires USE_WS2812)
+
 // Platform-specific pin definitions
 #if defined(__MSP430__)
     // MSP430 Platform

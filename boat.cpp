@@ -155,7 +155,7 @@ void boatLoop(unsigned long timestamp, double heading) {
 
     // Run one time initialization routines.
     if (first_time) {
-        Serial.println("("************* BOAT LOOP STARTED *************");
+        Serial.println("************* BOAT LOOP STARTED *************");
         servo1.write(90);    // rudder straight
         setMotor1Speed(0.0);   // motor off
 #ifdef DUAL_MOTOR
