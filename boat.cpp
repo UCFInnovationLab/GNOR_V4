@@ -18,9 +18,9 @@
 #endif
 
 extern Servo servo1;    // Rudder                        — declared in GNOR_V4.ino
-extern Servo servo2;    // Left motor (dual motor)
+extern Servo servo2;    // Right motor (dual motor)
 extern Servo servo3;    // Auxiliary servo
-extern Servo servoEsc;  // Single motor OR right motor (dual motor)
+extern Servo servoEsc;  // Single motor OR left motor (dual motor)
 
 unsigned long last_time = 0;     // last time through the loop
 
@@ -64,7 +64,7 @@ void setMotor1Speed(double speed) {
  * Set the left motor speed (dual motor config). speed is in the range 0.0 (off) to 1.0 (full).
  */
 void setMotor2Speed(double speed) {
-    servoEsc.write((int)(THROTTLE_LOW_DEGREES + (speed * (THROTTLE_HIGH_DEGREES - THROTTLE_LOW_DEGREES))));
+    servo2.write((int)(THROTTLE_LOW_DEGREES + (speed * (THROTTLE_HIGH_DEGREES - THROTTLE_LOW_DEGREES))));
 }
 
 /*
@@ -271,16 +271,17 @@ void boatLoop(unsigned long timestamp, double heading) {
 
 #ifdef DUAL_MOTOR
         //--------------------------------------------------
-        // Dual motor differential steering
-        // servo2: left motor, servoEsc: right motor, no rudder
+        // Dual motor differential steering (no rudder)
+        // Servo2: right motor
+        // Esc: left motor
         // NOTE: remember to detach the red power wire from the servo2 ESC
         //--------------------------------------------------
         diff = (P * error) / 180.0;      // scale error to motor-speed units
         if (diff >  MOTOR_BASE_SPEED) diff =  MOTOR_BASE_SPEED;
         if (diff < -MOTOR_BASE_SPEED) diff = -MOTOR_BASE_SPEED;
         if (motors_armed) {
-            setMotor2Speed(MOTOR_BASE_SPEED - diff);   // left
-            setMotor1Speed(MOTOR_BASE_SPEED + diff);   // right
+            setMotor2Speed(MOTOR_BASE_SPEED + diff);   // right
+            setMotor1Speed(MOTOR_BASE_SPEED - diff);   // left
         } else {
             setMotor2Speed(0.0);
             setMotor1Speed(0.0);
