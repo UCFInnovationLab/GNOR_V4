@@ -160,13 +160,14 @@ void setup() {
   ws_begin();
   ws_clear();
   Serial.println(F("WS2812 enabled."));
-#endif // USE_WS2812
+
 
   // Light some LEDs
   ws_setPixelColor(0, 50, 0, 0);
   ws_setPixelColor(1, 0, 50, 0);
   ws_setPixelColor(2, 0, 0, 50);
   ws_show();
+#endif // USE_WS2812
 
 #ifdef USE_MPU
   #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
