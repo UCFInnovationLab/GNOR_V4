@@ -9,7 +9,8 @@
 #include <Arduino.h>
 
 #define USE_BOAT          // Include boat loop
-//#define DUAL_MOTOR      // differential steering: left=servo2, right=servoEsc, no rudder
+//#define DUAL_MOTOR      // differential steering: left=servoEsc, right=servo2, no rudder
+//#deinfe DUAL_MOTOR_RUDDER // dual motor + rudder: left=servoEsc, right=servo2, rudder=servo1
 
 #define USE_MPU           // Comment out to disable MPU6050
 #define USE_WS2812        // Comment out to disable WS2812 LEDs (MSP430, MSP432, ESP32)
