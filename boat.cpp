@@ -57,7 +57,7 @@ static const int WAYPOINT_COUNT = sizeof(waypoints) / sizeof(waypoints[0]);
 void setMotor1Speed(double speed) {
     servoEsc.write((int)(THROTTLE_LOW_DEGREES + (speed * (THROTTLE_HIGH_DEGREES - THROTTLE_LOW_DEGREES))));
 #ifdef DUAL_MOTOR_RUDDER
-    servoEsc.write((int)(THROTTLE_LOW_DEGREES + (speed * (THROTTLE_HIGH_DEGREES - THROTTLE_LOW_DEGREES))));
+    servo2.write((int)(THROTTLE_LOW_DEGREES + (speed * (THROTTLE_HIGH_DEGREES - THROTTLE_LOW_DEGREES))));
 #endif
 }
 
