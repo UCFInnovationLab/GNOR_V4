@@ -6,21 +6,26 @@
  *   servo2   — Left motor  (dual motor config)
  *   servoEsc — Single motor (single motor config) OR right motor (dual motor config)
  *   servo3   — Auxiliary servo
- */
+ */ 
 
 #include "GNOR_V4.h"
 #include <Arduino.h>
 
 #if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
   #include <ESP32Servo.h>
+  #define ServoClass Servo
+#elif defined(__MSP432P401R__) || defined(__MSP432__)
+  #include "src/Servo432/Servo432.h"
+  #define ServoClass Servo432
 #else
   #include <Servo.h>
+  #define ServoClass Servo
 #endif
 
-extern Servo servo1;    // Rudder                        — declared in GNOR_V4.ino
-extern Servo servo2;    // Right motor (dual motor)
-extern Servo servo3;    // Auxiliary servo
-extern Servo servoEsc;  // Single motor OR left motor (dual motor)
+extern ServoClass servo1;    // Rudder                        — declared in GNOR_V4.ino
+extern ServoClass servo2;    // Right motor (dual motor)
+extern ServoClass servo3;    // Auxiliary servo
+extern ServoClass servoEsc;  // Single motor OR left motor (dual motor)
 
 unsigned long last_time = 0;     // last time through the loop
 

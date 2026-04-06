@@ -27,8 +27,8 @@
 #define SERVO_CLK_HZ     (SMCLK_HZ / 8UL)          // 1,500,000 Hz
 #define TIMER_PERIOD     ((uint16_t)(SERVO_CLK_HZ / 50UL))  // 30,000 ticks
 
-#define DEFAULT_MIN_US   1000
-#define DEFAULT_MAX_US   2000
+#define DEFAULT_MIN_US   564
+#define DEFAULT_MAX_US   2436
 #define MIN_PULSE_WIDTH  544   // Arduino Servo convention: below this = degrees
 
 // ---------------------------------------------------------------------------
