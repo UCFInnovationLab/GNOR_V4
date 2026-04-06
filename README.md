@@ -108,7 +108,7 @@ Using ZIP files from the **Releases** page is recommended because they provide a
 
 If you are using the **MSP-EXP430F5529LP**, you must install the TI Ez-FET Lite USB debugger driver before the board will be recognized by your computer.
 
-1. Download the driver installer: [ti_msp430driver_setup_1.0.1.1.exe](https://github.com/UCFInnovationLab/GNOR_V4/blob/main/docs/ti_msp430driver_setup_1.0.1.1.exe) Click the download raw button!
+1. Download the driver installer: [ti_msp430driver_setup_1.0.1.1.exe](https://github.com/UCFInnovationLab/GNOR_V4/blob/main/docs/ti_msp430driver_setup_1.0.1.1.exe) (Click the Download raw button!)
 2. Run the installer and follow the on-screen prompts.
 3. Once installation is complete, plug in your MSP-EXP430F5529LP via USB.
 4. Verify that the board is recognized by your computer before continuing.
