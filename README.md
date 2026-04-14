@@ -204,7 +204,7 @@ Connect the left ESC signal cable to the **ESC** connector on the board. Mind th
 > ⚠️ **WARNING: Incorrect orientation will damage the board and/or ESC. Double-check the wire orientation before applying power.**
 
 #### Right ESC
-Connect the right ESC signal cable to the **Servo2** connector on the board. Mind the orientation: the **black wire must align with the white line** on the board.
+Connect the right ESC signal cable to the **Servo2** connector on the board. Please remove the RED power wire from the connector to allow the board to be powered from the Left ESC only. Mind the orientation: the **black wire must align with the white line** on the board.
 
 > ⚠️ **WARNING: Incorrect orientation will damage the board and/or ESC. Double-check the wire orientation before applying power.**
 
