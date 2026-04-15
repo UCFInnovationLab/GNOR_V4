@@ -115,7 +115,18 @@ If you are using the **MSP-EXP430F5529LP**, you must install the TI Ez-FET Lite 
 
 > **Note:** This driver is only required for the MSP-EXP430F5529LP. Skip this step if you are using the MSP-EXP432P401R or ESP32.
 
-### Step 7 - Restart the Arduino IDE and Verify Installation
+### Step 7 - Install the FET110 Debugger Driver (MSP-EXP432P401R only)
+
+If you are using the **MSP-EXP432P401R**, you must install the TI MSP432 FET110 USB debugger driver before the board will be recognized by your computer.
+
+1. Download the driver installer: [ti_emupack_setup_9.2.0.00002_win_64.exe](https://github.com/UCFInnovationLab/GNOR_V4/blob/main/docs/ti_emupack_setup_9.2.0.00002_win_64.exe) (Click the Download raw button!)
+2. Run the installer and follow the on-screen prompts.
+3. Once installation is complete, plug in your MSP-EXP432P401R via USB.
+4. Verify that the board is recognized by your computer before continuing.
+
+> **Note:** This driver is only required for the MSP-EXP432P401R. Skip this step if you are using the MSP-EXP430F5529LP or ESP32.
+
+### Step 8 - Restart the Arduino IDE and Verify Installation
 
 1. Close the Arduino IDE.
 2. Reopen the Arduino IDE.
