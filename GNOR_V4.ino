@@ -178,24 +178,24 @@ void setup() {
 #ifdef USE_MPU
   #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
     /* 1. Recover stuck I2C bus — clock SCL 9 times to force slave to release SDA */
-    pinMode(SCL_PIN, OUTPUT);
-    pinMode(SDA_PIN, INPUT_PULLUP);
-    for (int i = 0; i < 9; i++) {
-      digitalWrite(SCL_PIN, HIGH); delayMicroseconds(5);
-      digitalWrite(SCL_PIN, LOW);  delayMicroseconds(5);
-    }
-    /* Send STOP condition */
-    pinMode(SDA_PIN, OUTPUT);
-    digitalWrite(SDA_PIN, LOW);  delayMicroseconds(5);
-    digitalWrite(SCL_PIN, HIGH); delayMicroseconds(5);
-    digitalWrite(SDA_PIN, HIGH); delayMicroseconds(5);
+    // pinMode(SCL_PIN, OUTPUT);
+    // pinMode(SDA_PIN, INPUT_PULLUP);
+    // for (int i = 0; i < 9; i++) {
+    //   digitalWrite(SCL_PIN, HIGH); delayMicroseconds(5);
+    //   digitalWrite(SCL_PIN, LOW);  delayMicroseconds(5);
+    // }
+    // /* Send STOP condition */
+    // pinMode(SDA_PIN, OUTPUT);
+    // digitalWrite(SDA_PIN, LOW);  delayMicroseconds(5);
+    // digitalWrite(SCL_PIN, HIGH); delayMicroseconds(5);
+    // digitalWrite(SDA_PIN, HIGH); delayMicroseconds(5);
 
     Wire.begin();
     delay(100); // extra settle time I2C before DMP init
     #if defined(__MSP430__)
     //Wire.setClock(400000);
     #elif !defined(__MSP432P401R__) && !defined(__MSP432__)
-    //Wire.setClock(400000); // 400kHz I2C clock
+    Wire.setClock(400000); // 400kHz I2C clock
     #endif
   #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
     Fastwire::setup(400, true);
@@ -207,7 +207,7 @@ void setup() {
 
   /*Initialize device*/
   Serial.println(F("Initializing I2C devices..."));
-  delay(200);   // Allow MPU6050 I2C bus to fully settle after power-on or reset
+  delay(500);   // Allow MPU6050 I2C bus to fully settle after power-on or reset
   mpu.initialize();
 
   /*Verify connection*/
