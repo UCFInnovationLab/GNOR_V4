@@ -175,9 +175,17 @@ void setup() {
   servoEsc.attach(ESC_PIN);
   servo1.write(90);
 
+  // Calibrate the motors
   if (digitalRead(CALIBRATE_SWITCH) == 0) {
     calibrate();
   }
+
+  // Set ESC servos to low early to Arm ESC
+  servoEsc.write((int)(THROTTLE_LOW_DEGREES + (0.0 * (THROTTLE_HIGH_DEGREES - THROTTLE_LOW_DEGREES))));
+  #ifdef DUAL_MOTOR || DUAL_MOTOR_RUDDER
+  servo2.write((int)(THROTTLE_LOW_DEGREES + (0.0 * (THROTTLE_HIGH_DEGREES - THROTTLE_LOW_DEGREES))));
+  #endif
+
 #ifdef USE_WS2812
   ws_begin();
   ws_clear();

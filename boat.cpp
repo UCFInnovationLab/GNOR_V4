@@ -38,8 +38,6 @@ unsigned long last_time = 0;     // last time through the loop
 
 #define P 2.0                       // Proportional constant used by the rudder or for each dual motor
 #define MOTOR_BASE_SPEED 0.5        // Default speed the single or dual motor(s) use (0.0-1.0)
-#define THROTTLE_HIGH_DEGREES 145   // High throttle setting in servo degrees
-#define THROTTLE_LOW_DEGREES 35     // Low throttle setting in servo degrees
 #define MAX_RUDDER_DEGREES 90/2     // Max angle the rudder moves on each side of zreo (90). Normally 45 Degrees.
 
 // Waypoint Array
@@ -119,12 +117,19 @@ void calibrate() {
     if (calibrate_time) {
         if (calibrateSwitchPressed() == 1) {
             setMotor1Speed(1.0);
-            Serial.println('Calibrate High Speed');
+            #ifdef DUAL_MOTOR) || DUAL_MOTOR_RUDDER
+            setMotor2Speed(1.0);
+            #endif
         }
-Serial.println("Start Calibrate");
+        Serial.println("Start Calibrate");
+
         while (calibrateSwitchPressed() == 1)  {} // loop with pressed waiting for ESC beeps
-Serial.println("End Calibrate");
+        
+        Serial.println("End Calibrate");
         setMotor1Speed(0.0);
+        #ifdef DUAL_MOTOR || DUAL_MOTOR_RUDDER
+        setMotor2Speed(0.0);
+        #endif
 
         calibrate_time = false;
     }
