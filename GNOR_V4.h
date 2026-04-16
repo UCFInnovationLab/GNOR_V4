@@ -28,12 +28,11 @@
     #define SERVO2_PIN 39
     #define SERVO3_PIN 38
     #define ESC_PIN 37
-    #define MOTOR_SWITCH 33
     // #define SERVO1_PIN 39    // Move servo pins to the left to fix a bad ESC port
     // #define SERVO2_PIN 37
     // #define SERVO3_PIN 38
     // #define ESC_PIN 40
-    // #define MOTOR_SWITCH 33
+    #define MOTOR_SWITCH 33
     #define CALIBRATE_SWITCH 13
     #define RESET_SWITCH 16
     #define LED_PIN 11
