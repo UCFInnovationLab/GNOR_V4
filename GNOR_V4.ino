@@ -16,6 +16,8 @@ ServoClass servo2;     // Left motor (dual motor config)
 ServoClass servo3;     // Auxiliary servo
 ServoClass servoEsc;   // Single motor OR right motor (dual motor config)
 
+extern void calibrate();
+
 #ifdef USE_WS2812
 #define WS2812_COUNT 3
 
@@ -161,6 +163,21 @@ void setup() {
   while (!Serial);
   Serial.println("System Starting");
 
+  #if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
+  servo1.setPeriodHertz(50);
+  servo2.setPeriodHertz(50);
+  servo3.setPeriodHertz(50);
+  servoEsc.setPeriodHertz(50);
+  #endif
+  servo1.attach(SERVO1_PIN);
+  servo2.attach(SERVO2_PIN);
+  servo3.attach(SERVO3_PIN);
+  servoEsc.attach(ESC_PIN);
+  servo1.write(90);
+
+  if (digitalRead(CALIBRATE_SWITCH) == 0) {
+    calibrate();
+  }
 #ifdef USE_WS2812
   ws_begin();
   ws_clear();
@@ -270,18 +287,6 @@ void setup() {
     // 2 = DMP configuration updates failed
   }
 #endif // USE_MPU
-
-#if defined(ESP32) || defined(ARDUINO_ARCH_ESP32)
-servo1.setPeriodHertz(50);
-servo2.setPeriodHertz(50);
-servo3.setPeriodHertz(50);
-servoEsc.setPeriodHertz(50);
-#endif
-servo1.attach(SERVO1_PIN);
-servo2.attach(SERVO2_PIN);
-servo3.attach(SERVO3_PIN);
-servoEsc.attach(ESC_PIN);
-servo1.write(90);
 
 #ifdef USE_SERVO_TEST
   Serial.println(F("Servo test enabled."));

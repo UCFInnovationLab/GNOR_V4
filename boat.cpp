@@ -27,6 +27,8 @@ extern ServoClass servo2;    // Right motor (dual motor)
 extern ServoClass servo3;    // Auxiliary servo
 extern ServoClass servoEsc;  // Single motor OR left motor (dual motor)
 
+static boolean calibrate_time=true;     // Should we calibrate
+
 unsigned long last_time = 0;     // last time through the loop
 
 #define LED2_DEAD_BAND      2.0f    // degrees — within this shows bright on-target green
@@ -112,7 +114,21 @@ double wrapTo180(double angle) {
     return angle;
 }
 
+void calibrate() {
+    // Calibrate ESC with max and min pulse widths
+    if (calibrate_time) {
+        if (calibrateSwitchPressed() == 1) {
+            setMotor1Speed(1.0);
+            Serial.println('Calibrate High Speed');
+        }
+Serial.println("Start Calibrate");
+        while (calibrateSwitchPressed() == 1)  {} // loop with pressed waiting for ESC beeps
+Serial.println("End Calibrate");
+        setMotor1Speed(0.0);
 
+        calibrate_time = false;
+    }
+}
 
 /*
  * boatLoop
@@ -147,19 +163,6 @@ void boatLoop(unsigned long timestamp, double heading) {
     //--------------------------------------------------------------------------------
     // pre-start
     //--------------------------------------------------------------------------------
-
-    // Calibrate ESC with max and min pulse widths
-    if (calibrate_time) {
-        if (calibrateSwitchPressed() == 1) {
-            setMotor1Speed(1.0);
-        }
-
-        while (calibrateSwitchPressed() == 1)  {} // loop with pressed waiting for ESC beeps
-
-        setMotor1Speed(0.0);
-
-        calibrate_time = false;
-    }
 
     // Run one time initialization routines.
     if (first_time) {
