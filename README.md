@@ -240,7 +240,9 @@ Connect the motor switch to the **Motor** connector on the board, same as the si
 
 ### ESC Calibration
 
-ESC calibration teaches the ESC the zero throttle and maximum throttle positions so that it can use the full throttle range. This only needs to be done once, or any time the ESC is replaced.
+NOTE: Try your motor first, if it works then calibration does not need to be done.
+
+ESC calibration teaches the ESC the zero throttle and maximum throttle positions so that it can use the full throttle range. This only needs to be done once, or any time the ESC is replaced.  
 
 **Steps:**
 1. Ensure the board is powered off.
