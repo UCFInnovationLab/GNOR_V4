@@ -9,7 +9,7 @@
 #include <Arduino.h>
 
 #define USE_BOAT          // Include boat loop
-#define DUAL_MOTOR      // differential steering: left=servoEsc, right=servo2, no rudder
+//#define DUAL_MOTOR      // differential steering: left=servoEsc, right=servo2, no rudder
 //#define DUAL_MOTOR_RUDDER // dual motor + rudder: left=servoEsc, right=servo2, rudder=servo1
 
 #define USE_MPU           // Comment out to disable MPU6050
