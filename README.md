@@ -126,7 +126,23 @@ If you are using the **MSP-EXP432P401R**, you must install the TI MSP432 FET110 
 
 > **Note:** This driver is only required for the MSP-EXP432P401R. Skip this step if you are using the MSP-EXP430F5529LP or ESP32.
 
-### Step 8 - Restart the Arduino IDE and Verify Installation
+### Step 8 - Install the CP210x USB Driver (ESP32-CP2102 only)
+
+If you are using the **ESP32-CP2102**, you must install the Silicon Labs CP210x USB-to-UART driver before the board will be recognized by your computer.
+
+1. Download the driver ZIP: [CP210x_Universal_Windows_Driver.zip](https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip)
+2. Extract the ZIP file into a folder of your choice.
+3. Plug in your ESP32-CP2102 via USB.
+4. Open **Device Manager** (right-click the Start button and select **Device Manager**).
+5. Locate the ESP32 device in the list — it may appear under **Other devices** with a warning icon.
+6. Using **Windows File Explorer**, locate the driver folder you extracted in step 2.
+7. Right-click on the **silabser.inf** file and select **Install**.
+8. Follow the on-screen instructions to complete the installation.
+9. Verify that the device now appears in Device Manager under **Ports (COM & LPT)** as a **Silicon Labs CP210x** COM port.
+
+> **Note:** This driver is only required for the ESP32-CP2102. Skip this step if you are using the MSP-EXP430F5529LP or MSP-EXP432P401R.
+
+### Step 9 - Restart the Arduino IDE and Verify Installation
 
 1. Close the Arduino IDE.
 2. Reopen the Arduino IDE.
